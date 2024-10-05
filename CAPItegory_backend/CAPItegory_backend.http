@@ -1,0 +1,6 @@
+@CAPItegory_backend_HostAddress = http://localhost:5225
+
+GET {{CAPItegory_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
