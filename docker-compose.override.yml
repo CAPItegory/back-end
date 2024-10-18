@@ -10,3 +10,31 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  capitegory-sqlserver:
+    user: root
+    volumes:
+        - backup_capitegory:/var/opt/mssql/backups
+        - data_capitegory:/var/opt/mssql/data
+        - log_capitegory:/var/opt/mssql/log
+    healthcheck:
+      test: timeout 1 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/1433'
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+
+  capitegory-sqlserver.configurator:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    depends_on:
+      capitegory-sqlserver:
+        condition: service_healthy
+    command: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "capitegory-sqlserver", "-U", "sa", "-P", "${DATABASE_PASSWORD}", "-d", "master", "-i", "docker-entrypoint-initdb.d/init.sql", "-C"]
+
+
+volumes:
+  backup_capitegory:
+  data_capitegory:
+  log_capitegory:  

@@ -1,3 +1,6 @@
+using CAPItegory_backend;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<CapitegoryContext>(options =>
+    options.UseSqlServer(string.Format(builder.Configuration.GetConnectionString("CapitegoryContext") ?? "", Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD"))));
 
 var app = builder.Build();
 
