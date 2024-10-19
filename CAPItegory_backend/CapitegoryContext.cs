@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CAPItegory_backend.Models;
 
 namespace CAPItegory_backend;
 
@@ -20,4 +21,6 @@ public partial class CapitegoryContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<Category> Category { get; set; } = default!;
 }
