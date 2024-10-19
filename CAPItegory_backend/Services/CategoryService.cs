@@ -1,4 +1,5 @@
 ﻿using CAPItegory_backend.Models;
+using CAPItegory_backend.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace CAPItegory_backend.Services
@@ -20,8 +21,15 @@ namespace CAPItegory_backend.Services
             return category;
         }
 
-        public async Task<Category> CreateCategory(Category category)
+        public async Task<Category> CreateCategory(CreateCategoryQuery query)
         {
+            var category = new Category();
+            category.CreationDate = DateTime.Now;
+            category.Name = query.Name;
+            if (query.Parent != null)
+            {
+                category.Parent = _context.Category.Find(query.Parent) ?? throw new KeyNotFoundException();
+            }
             _context.Category.Add(category);
             await _context.SaveChangesAsync();
 
@@ -37,15 +45,18 @@ namespace CAPItegory_backend.Services
             return;
         }
 
-        public async Task UpdateCategory(Guid id, Category category)
+        public async Task UpdateCategory(Guid id, UpdateCategoryQuery query)
         {
-            if (id != category.Id)
-            {
-                throw new ArgumentException("Invalid category");
-            }
-
+            var category = _context.Category.Find(id) ?? throw new KeyNotFoundException("Can't find category");
+            
             _context.Entry(category).State = EntityState.Modified;
-
+            category.Name = query.Name;
+            if (query.Parent != null)
+            {
+                var parent = _context.Category.Find(query.Parent) ?? throw new KeyNotFoundException("Can't find parent");
+                category.Parent = parent;
+            }
+            
             try
             {
                 await _context.SaveChangesAsync();

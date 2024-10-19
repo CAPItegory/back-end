@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CAPItegory_backend.Models;
 using CAPItegory_backend.Services;
+using CAPItegory_backend.Query;
 
 namespace CAPItegory_backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/category")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
@@ -43,14 +44,11 @@ namespace CAPItegory_backend.Controllers
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(Guid id, Category category)
+        public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryQuery query)
         {
             try
             {
-                await _service.UpdateCategory(id, category);
-            } catch (ArgumentException)
-            {
-                return BadRequest();
+                await _service.UpdateCategory(id, query);
             } catch (KeyNotFoundException)
             {
                 return NotFound();
@@ -62,9 +60,9 @@ namespace CAPItegory_backend.Controllers
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> CreateCategory(Category category)
+        public async Task<ActionResult<Category>> CreateCategory(CreateCategoryQuery query)
         {
-            var category_created = await _service.CreateCategory(category);
+            var category_created = await _service.CreateCategory(query);
 
             return CreatedAtAction("GetCategory", new { id = category_created.Id }, category_created);
         }
