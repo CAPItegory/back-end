@@ -53,6 +53,10 @@ namespace CAPItegory_backend.Services
             category.Name = query.Name;
             if (query.Parent != null)
             {
+                if (query.Parent == id)
+                {
+                    throw new ArgumentException("Category can't be his own parent");
+                }
                 var parent = _context.Category.Find(query.Parent) ?? throw new KeyNotFoundException("Can't find parent");
                 category.Parent = parent;
             }

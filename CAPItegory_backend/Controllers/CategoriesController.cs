@@ -49,9 +49,12 @@ namespace CAPItegory_backend.Controllers
             try
             {
                 await _service.UpdateCategory(id, query);
-            } catch (KeyNotFoundException)
+            } catch (KeyNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
+            } catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
             }
 
             return NoContent();
