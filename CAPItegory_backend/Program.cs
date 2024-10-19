@@ -1,4 +1,5 @@
 using CAPItegory_backend;
+using CAPItegory_backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CapitegoryContext>(options =>
     options.UseSqlServer(string.Format(builder.Configuration.GetConnectionString("CapitegoryContext") ?? "", Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD"))));
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
