@@ -1,4 +1,5 @@
 ﻿using CAPItegory_backend.Models;
+using CAPItegory_backend.Queries;
 using CAPItegory_backend.Query;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,8 @@ namespace CAPItegory_backend.Services
         public Task<IEnumerable<Category>> GetAllCategories();
 
         public Task<Category?> GetCategory(Guid id);
+
+        public Task<IEnumerable<Category>> SearchCategories(SearchCategoryQuery query);
 
         public Task UpdateCategory(Guid id, UpdateCategoryQuery query);
 

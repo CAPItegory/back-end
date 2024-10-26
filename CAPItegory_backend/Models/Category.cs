@@ -9,5 +9,7 @@
         public Category? Parent { get; set; }
 
         public DateTime? CreationDate { get; set; }
+
+        public int NumberOfChildren { get; set; }
     }
 }
