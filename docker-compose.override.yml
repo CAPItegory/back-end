@@ -31,7 +31,7 @@ services:
     depends_on:
       capitegory-sqlserver:
         condition: service_healthy
-    command: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "capitegory-sqlserver", "-U", "sa", "-P", "${DATABASE_PASSWORD}", "-d", "master", "-i", "docker-entrypoint-initdb.d/init.sql", "-C"]
+    command: ["/opt/mssql-tools18/bin/sqlcmd", "-S", "capitegory-sqlserver", "-U", "sa", "-P", "${DATABASE_PASSWORD}", "-d", "master", "-i", "docker-entrypoint-initdb.d/init.sql", "-C"]
 
 
 volumes:
