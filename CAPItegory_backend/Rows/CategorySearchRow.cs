@@ -9,5 +9,7 @@
         public DateTime? CreationDate { get; set; }
 
         public bool IsRoot { get; set; }
+
+        public List<CategorySearchRow> Children { get; set; } = [];
     }
 }
