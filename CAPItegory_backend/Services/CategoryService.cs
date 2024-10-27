@@ -1,6 +1,8 @@
-﻿using CAPItegory_backend.Models;
+﻿using AutoMapper;
+using CAPItegory_backend.Models;
 using CAPItegory_backend.Queries;
 using CAPItegory_backend.Query;
+using CAPItegory_backend.Rows;
 using Microsoft.EntityFrameworkCore;
 
 namespace CAPItegory_backend.Services
@@ -8,8 +10,12 @@ namespace CAPItegory_backend.Services
     public class CategoryService : ICategoryService
     {
         private readonly CapitegoryContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoryService(CapitegoryContext context) { _context = context; }
+        public CategoryService(CapitegoryContext context, IMapper mapper) { 
+            _context = context;
+            _mapper = mapper;
+        }
 
         public async Task<IEnumerable<Category>> GetAllCategories()
         {
@@ -22,9 +28,9 @@ namespace CAPItegory_backend.Services
             return category;
         }
 
-        public async Task<IEnumerable<Category>> SearchCategories(SearchCategoryQuery query)
+        public async Task<IEnumerable<CategorySearchRow>> SearchCategories(SearchCategoryQuery query)
         {
-            var category = _context.Category.AsQueryable();
+            var category = _context.Category.Include(c => c.Parent).AsQueryable();
 
             //Filters
             if (query.IsRoot != null) {
@@ -49,15 +55,18 @@ namespace CAPItegory_backend.Services
             }
 
             //Page
-            return await category.Skip(query.PageSize * (query.PageNumber - 1)).Take(query.PageSize).ToListAsync();
+            var result = await category.Skip(query.PageSize * (query.PageNumber - 1)).Take(query.PageSize).ToListAsync();
+            return _mapper.Map<IEnumerable<CategorySearchRow>>(result);
         }
 
         public async Task<Category> CreateCategory(CreateCategoryQuery query)
         {
-            var category = new Category();
-            category.CreationDate = DateTime.Now;
-            category.Name = query.Name;
-            category.NumberOfChildren = 0;
+            var category = new Category
+            {
+                CreationDate = DateTime.Now,
+                Name = query.Name,
+                NumberOfChildren = 0
+            };
             if (query.Parent != null)
             {
                 category.Parent = _context.Category.Find(query.Parent) ?? throw new KeyNotFoundException();

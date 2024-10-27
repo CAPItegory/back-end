@@ -3,6 +3,7 @@ using CAPItegory_backend.Models;
 using CAPItegory_backend.Services;
 using CAPItegory_backend.Query;
 using CAPItegory_backend.Queries;
+using CAPItegory_backend.Rows;
 
 namespace CAPItegory_backend.Controllers
 {
@@ -43,7 +44,7 @@ namespace CAPItegory_backend.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<List<Category>>> SearchCategory([FromQuery] SearchCategoryQuery query)
+        public async Task<ActionResult<List<CategorySearchRow>>> SearchCategory([FromQuery] SearchCategoryQuery query)
         {
             var categories = await _service.SearchCategories(query);
             return Ok(categories);
