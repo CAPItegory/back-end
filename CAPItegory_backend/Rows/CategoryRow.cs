@@ -1,8 +1,6 @@
-﻿using CAPItegory_backend.Models;
-
-namespace CAPItegory_backend.Rows
+﻿namespace CAPItegory_backend.Rows
 {
-    public class CategorySearchRow
+    public class CategoryRow
     {
         public Guid Id { get; set; }
 
@@ -11,5 +9,7 @@ namespace CAPItegory_backend.Rows
         public DateTime? CreationDate { get; set; }
 
         public bool IsRoot { get; set; }
+
+        public List<CategoryRow> Children { get; set; } = [];
     }
 }

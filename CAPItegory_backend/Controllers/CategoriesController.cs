@@ -23,7 +23,7 @@ namespace CAPItegory_backend.Controllers
 
         // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<CategoryRow>>> GetCategories()
         {
             var categories = await _service.GetAllCategories();
             return Ok(categories);
@@ -31,7 +31,7 @@ namespace CAPItegory_backend.Controllers
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(Guid id)
+        public async Task<ActionResult<CategoryRow>> GetCategory(Guid id)
         {
             var category = await _service.GetCategory(id);
 
@@ -44,7 +44,7 @@ namespace CAPItegory_backend.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<List<CategorySearchRow>>> SearchCategory([FromQuery] SearchCategoryQuery query)
+        public async Task<ActionResult<List<CategoryRow>>> SearchCategory([FromQuery] SearchCategoryQuery query)
         {
             var categories = await _service.SearchCategories(query);
             return Ok(categories);
@@ -72,7 +72,7 @@ namespace CAPItegory_backend.Controllers
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> CreateCategory(CreateCategoryQuery query)
+        public async Task<ActionResult<CategoryRow>> CreateCategory(CreateCategoryQuery query)
         {
             var category_created = await _service.CreateCategory(query);
 
