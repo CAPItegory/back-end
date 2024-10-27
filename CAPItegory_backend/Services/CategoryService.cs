@@ -17,18 +17,18 @@ namespace CAPItegory_backend.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategories()
+        public async Task<IEnumerable<CategoryRow>> GetAllCategories()
         {
-            return await _context.Category.ToListAsync();
+            return _mapper.Map<IEnumerable<CategoryRow>>(await _context.Category.ToListAsync());
         }
 
-        public async Task<Category?> GetCategory(Guid id)
+        public async Task<CategoryRow?> GetCategory(Guid id)
         {
-            var category = await _context.Category.FindAsync(id);
-            return category;
+            var category = (await _context.Category.Include(c => c.Children).AsQueryable().Where(c => c.Id == id).ToListAsync())[0];
+            return _mapper.Map<CategoryRow>(category);
         }
 
-        public async Task<IEnumerable<CategorySearchRow>> SearchCategories(SearchCategoryQuery query)
+        public async Task<IEnumerable<CategoryRow>> SearchCategories(SearchCategoryQuery query)
         {
             var category = _context.Category.Include(c => c.Parent).AsQueryable();
 
@@ -56,10 +56,10 @@ namespace CAPItegory_backend.Services
 
             //Page
             var result = await category.Skip(query.PageSize * (query.PageNumber - 1)).Take(query.PageSize).ToListAsync();
-            return _mapper.Map<IEnumerable<CategorySearchRow>>(result);
+            return _mapper.Map<IEnumerable<CategoryRow>>(result);
         }
 
-        public async Task<Category> CreateCategory(CreateCategoryQuery query)
+        public async Task<CategoryRow> CreateCategory(CreateCategoryQuery query)
         {
             var category = new Category
             {
@@ -75,7 +75,7 @@ namespace CAPItegory_backend.Services
             _context.Category.Add(category);
             await _context.SaveChangesAsync();
 
-            return category;
+            return _mapper.Map<CategoryRow>(category);
         }
 
         public async Task DeleteCategory(Guid id)

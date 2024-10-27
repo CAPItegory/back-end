@@ -8,7 +8,7 @@ namespace CAPItegory_backend.Configuration
     {
         public MappingProfile()
         {
-            CreateMap<Category, CategorySearchRow>()
+            CreateMap<Category, CategoryRow>()
                 .ForMember(dest => dest.IsRoot, opt => opt.MapFrom(src => src.Parent == null));
         }
     }

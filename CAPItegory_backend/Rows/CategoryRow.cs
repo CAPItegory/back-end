@@ -1,6 +1,6 @@
 ﻿namespace CAPItegory_backend.Rows
 {
-    public class CategorySearchRow
+    public class CategoryRow
     {
         public Guid Id { get; set; }
 
@@ -10,6 +10,6 @@
 
         public bool IsRoot { get; set; }
 
-        public List<CategorySearchRow> Children { get; set; } = [];
+        public List<CategoryRow> Children { get; set; } = [];
     }
 }
