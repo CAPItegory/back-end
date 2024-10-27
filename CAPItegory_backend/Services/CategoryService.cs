@@ -51,7 +51,7 @@ namespace CAPItegory_backend.Services
                 category = category.OrderBy(c => c.CreationDate);
             }
             if (query.OrderByNumberOfChild ?? false) {
-                category = category.OrderBy(c => c.NumberOfChildren);
+                category = category.OrderBy(c => c.Children.Count);
             }
 
             //Page
@@ -65,12 +65,12 @@ namespace CAPItegory_backend.Services
             {
                 CreationDate = DateTime.Now,
                 Name = query.Name,
-                NumberOfChildren = 0
+                Children = []
             };
             if (query.Parent != null)
             {
                 category.Parent = _context.Category.Find(query.Parent) ?? throw new KeyNotFoundException();
-                category.Parent.NumberOfChildren += 1;
+                category.Parent.Children.Add(category);
             }
             _context.Category.Add(category);
             await _context.SaveChangesAsync();
@@ -82,7 +82,7 @@ namespace CAPItegory_backend.Services
         {
             var category = await _context.Category.FindAsync(id) ?? throw new KeyNotFoundException();
             if (category.Parent != null) { 
-                category.Parent.NumberOfChildren -= 1;
+                category.Parent.Children.Remove(category);
             }
             _context.Category.Remove(category);
             await _context.SaveChangesAsync();
@@ -103,7 +103,7 @@ namespace CAPItegory_backend.Services
                     throw new ArgumentException("Category can't be his own parent");
                 }
                 var parent = _context.Category.Find(query.Parent) ?? throw new KeyNotFoundException("Can't find parent");
-                parent.NumberOfChildren += 1;
+                parent.Children.Add(category);
                 category.Parent = parent;
             }
             

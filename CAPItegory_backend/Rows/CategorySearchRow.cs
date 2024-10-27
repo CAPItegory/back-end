@@ -1,6 +1,4 @@
-﻿using CAPItegory_backend.Models;
-
-namespace CAPItegory_backend.Rows
+﻿namespace CAPItegory_backend.Rows
 {
     public class CategorySearchRow
     {

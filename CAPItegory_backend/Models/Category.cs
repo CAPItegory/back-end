@@ -10,6 +10,6 @@
 
         public DateTime? CreationDate { get; set; }
 
-        public int NumberOfChildren { get; set; }
+        public List<Category> Children { get; set; } = [];
     }
 }

@@ -2,7 +2,6 @@
 using CAPItegory_backend.Queries;
 using CAPItegory_backend.Query;
 using CAPItegory_backend.Rows;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CAPItegory_backend.Services
 {
