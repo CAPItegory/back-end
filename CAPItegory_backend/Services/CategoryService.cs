@@ -42,6 +42,10 @@ namespace CAPItegory_backend.Services
             if (query.AfterDate != null) { 
                 category = category.Where(c => c.CreationDate >= query.AfterDate);
             }
+            if (query.ParentId != null)
+            {
+                category = category.Where(c => c.Parent != null && c.Parent.Id == query.ParentId);
+            }
 
             //Order
             if (query.OrderByName ?? false) {
