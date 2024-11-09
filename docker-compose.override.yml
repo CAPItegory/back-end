@@ -1,5 +1,5 @@
 services:
-  capitegory_backend:
+  capitegory-backend:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
@@ -24,14 +24,17 @@ services:
       start_period: 10s
       timeout: 3s
 
-  capitegory-sqlserver.configurator:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    volumes:
-      - ./init:/docker-entrypoint-initdb.d
+  migrations:
+    container_name: capitegory-service-migrations
+    build:
+      context: CAPItegory_backend
+      dockerfile: Dockerfile
+      target: migrations
+    environment:
+      - MSSQL_SA_PASSWORD=${DATABASE_PASSWORD}
     depends_on:
-      capitegory-sqlserver:
-        condition: service_healthy
-    command: ["/opt/mssql-tools18/bin/sqlcmd", "-S", "capitegory-sqlserver", "-U", "sa", "-P", "${DATABASE_PASSWORD}", "-d", "master", "-i", "docker-entrypoint-initdb.d/init.sql", "-C"]
+        capitegory-sqlserver:
+            condition: service_healthy
 
 
 volumes:

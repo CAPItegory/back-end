@@ -1,11 +1,12 @@
 services:
 
-  capitegory_backend:
+  capitegory-backend:
     container_name: capitegory-back
     image: ${DOCKER_REGISTRY-}capitegorybackend
     build:
-      context: .
-      dockerfile: CAPItegory_backend/Dockerfile
+      context: CAPItegory_backend
+      dockerfile: Dockerfile
+      target: final
     environment:
       - MSSQL_SA_PASSWORD=${DATABASE_PASSWORD}
 
