@@ -63,7 +63,7 @@ namespace CAPItegory_backend.Services
             var row = new SearchRow
             {
                 Categories = _mapper.Map<IEnumerable<CategoryRow>>(result),
-                NumberOfPage = category.Count() / query.PageSize,
+                NumberOfPage = (category.Count() / query.PageSize) + 1,
                 PageNumber = query.PageNumber,
                 PageSize = query.PageSize,
             };
