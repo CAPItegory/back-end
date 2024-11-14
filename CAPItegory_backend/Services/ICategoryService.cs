@@ -11,7 +11,7 @@ namespace CAPItegory_backend.Services
 
         public Task<CategoryRow?> GetCategory(Guid id);
 
-        public Task<IEnumerable<CategoryRow>> SearchCategories(SearchCategoryQuery query);
+        public Task<SearchRow> SearchCategories(SearchCategoryQuery query);
 
         public Task UpdateCategory(Guid id, UpdateCategoryQuery query);
 

@@ -11,13 +11,11 @@ namespace CAPItegory_backend.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly CapitegoryContext _context;
 
         private readonly ICategoryService _service;
 
-        public CategoriesController(CapitegoryContext context, ICategoryService categoryService)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _context = context;
             _service = categoryService;
         }
 
@@ -44,7 +42,7 @@ namespace CAPItegory_backend.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<List<CategoryRow>>> SearchCategory([FromQuery] SearchCategoryQuery query)
+        public async Task<ActionResult<SearchRow>> SearchCategory([FromQuery] SearchCategoryQuery query)
         {
             var categories = await _service.SearchCategories(query);
             return Ok(categories);
