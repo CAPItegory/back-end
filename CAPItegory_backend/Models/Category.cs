@@ -8,6 +8,8 @@
 
         public Category? Parent { get; set; }
 
+        public Guid? ParentId { get; set; }
+
         public DateTime? CreationDate { get; set; }
 
         public List<Category> Children { get; set; } = [];
