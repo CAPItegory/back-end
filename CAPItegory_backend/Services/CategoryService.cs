@@ -101,11 +101,9 @@ namespace CAPItegory_backend.Services
 
         public async Task DeleteCategory(Guid id)
         {
-            var category = await _context.Category.FindAsync(id) ?? throw new KeyNotFoundException();
-            if (category.Parent != null) { 
-                category.Parent.Children.Remove(category);
-            }
-            _context.Category.Remove(category);
+            var category = _context.Category.Include(c => c.Children).FirstOrDefault(c => c.Id == id) ?? throw new KeyNotFoundException();
+            category.Parent?.Children.Remove(category);
+            await DeleteCategory(category);
             await _context.SaveChangesAsync();
 
             return;
@@ -155,5 +153,14 @@ namespace CAPItegory_backend.Services
             return _context.Category.Any(e => e.Id == id);
         }
 
+        private async Task DeleteCategory(Category category)
+        {
+            var children = await _context.Category.Include(c => c.Children).Where(c => c.ParentId == category.Id).ToListAsync();
+            foreach (var child in children)
+            {
+                await DeleteCategory(child);
+            }
+            _context.Category.Remove(category);
+        }
     }
 }
