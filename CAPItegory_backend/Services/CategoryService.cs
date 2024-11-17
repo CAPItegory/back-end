@@ -106,7 +106,10 @@ namespace CAPItegory_backend.Services
             var category = _context.Category.Find(id) ?? throw new KeyNotFoundException("Can't find category");
             
             _context.Entry(category).State = EntityState.Modified;
-            category.Name = query.Name;
+            if (query.Name != null)
+            {
+                category.Name = query.Name;
+            }
             if (query.Parent != null)
             {
                 if (query.Parent == id)
