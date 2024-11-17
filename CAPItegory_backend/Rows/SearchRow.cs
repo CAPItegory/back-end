@@ -5,7 +5,7 @@
 
         public IEnumerable<CategoryRow> Categories { get; set; } = [];
 
-        public int NumberOfPage { get; set; }
+        public int TotalPages { get; set; }
 
         public int PageNumber { get; set; }
 
