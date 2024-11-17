@@ -72,7 +72,19 @@ namespace CAPItegory_backend.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoryRow>> CreateCategory(CreateCategoryQuery query)
         {
-            var category_created = await _service.CreateCategory(query);
+            CategoryRow category_created;
+            try
+            {
+                category_created = await _service.CreateCategory(query);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
 
             return CreatedAtAction("GetCategory", new { id = category_created.Id }, category_created);
         }
