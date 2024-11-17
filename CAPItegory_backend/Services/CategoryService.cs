@@ -72,6 +72,10 @@ namespace CAPItegory_backend.Services
 
         public async Task<CategoryRow> CreateCategory(CreateCategoryQuery query)
         {
+            if (query.Name == null || query.Name.Trim() == "")
+            {
+                throw new ArgumentException("Name can't be empty");
+            }
             var category = new Category
             {
                 CreationDate = DateTime.Now,
@@ -106,7 +110,10 @@ namespace CAPItegory_backend.Services
             var category = _context.Category.Find(id) ?? throw new KeyNotFoundException("Can't find category");
             
             _context.Entry(category).State = EntityState.Modified;
-            category.Name = query.Name;
+            if (query.Name != null && query.Name.Trim() != "")
+            {
+                category.Name = query.Name;
+            }
             if (query.Parent != null)
             {
                 if (query.Parent == id)
