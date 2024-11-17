@@ -36,7 +36,7 @@ namespace CAPItegory_backend.Services
 
         public async Task<SearchRow> SearchCategories(SearchCategoryQuery query)
         {
-            var category = _context.Category.Include(c => c.Parent).AsQueryable();
+            var category = _context.Category.Include(c => c.Parent).Include(c => c.Children).AsQueryable();
 
             //Filters
             if (query.IsRoot != null) {
@@ -61,7 +61,7 @@ namespace CAPItegory_backend.Services
                 category = category.OrderBy(c => c.CreationDate);
             }
             if (query.OrderByNumberOfChild ?? false) {
-                category = category.OrderBy(c => c.Children.Count);
+                category = category.OrderByDescending(c => c.Children.Count);
             }
 
             //Page
