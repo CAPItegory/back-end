@@ -28,7 +28,7 @@ namespace CAPItegory_backend.Services
             return _mapper.Map<CategoryRow>(category);
         }
 
-        public async Task<IEnumerable<CategoryRow>> SearchCategories(SearchCategoryQuery query)
+        public async Task<SearchRow> SearchCategories(SearchCategoryQuery query)
         {
             var category = _context.Category.Include(c => c.Parent).AsQueryable();
 
@@ -60,7 +60,14 @@ namespace CAPItegory_backend.Services
 
             //Page
             var result = await category.Skip(query.PageSize * (query.PageNumber - 1)).Take(query.PageSize).ToListAsync();
-            return _mapper.Map<IEnumerable<CategoryRow>>(result);
+            var row = new SearchRow
+            {
+                Categories = _mapper.Map<IEnumerable<CategoryRow>>(result),
+                NumberOfPage = (category.Count() / query.PageSize) + 1,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+            };
+            return row;
         }
 
         public async Task<CategoryRow> CreateCategory(CreateCategoryQuery query)
