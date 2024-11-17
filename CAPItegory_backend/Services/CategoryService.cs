@@ -4,6 +4,7 @@ using CAPItegory_backend.Queries;
 using CAPItegory_backend.Query;
 using CAPItegory_backend.Rows;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CAPItegory_backend.Services
 {
@@ -25,6 +26,11 @@ namespace CAPItegory_backend.Services
         public async Task<CategoryRow?> GetCategory(Guid id)
         {
             var category = (await _context.Category.Include(c => c.Children).AsQueryable().Where(c => c.Id == id).ToListAsync())[0];
+            var parentsList =  (await _context.Category.Include(c => c.Children).AsQueryable().Where(c => c.Children.Any(c => c.Id == id)).ToListAsync());
+            if ( !parentsList.IsNullOrEmpty() )
+            {
+                category.Parent = parentsList[0];
+            }
             return _mapper.Map<CategoryRow>(category);
         }
 
