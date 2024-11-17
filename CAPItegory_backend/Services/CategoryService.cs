@@ -101,7 +101,7 @@ namespace CAPItegory_backend.Services
 
         public async Task DeleteCategory(Guid id)
         {
-            var category = _context.Category.Include(c => c.Children).FirstOrDefault(c => c.Id == id) ?? throw new KeyNotFoundException();
+            var category = await _context.Category.Include(c => c.Children).FirstOrDefaultAsync(c => c.Id == id) ?? throw new KeyNotFoundException();
             category.Parent?.Children.Remove(category);
             await DeleteCategory(category);
             await _context.SaveChangesAsync();
@@ -111,25 +111,30 @@ namespace CAPItegory_backend.Services
 
         public async Task UpdateCategory(Guid id, UpdateCategoryQuery query)
         {
-            var category = _context.Category.Find(id) ?? throw new KeyNotFoundException("Can't find category");
+            var category = await _context.Category.Include(c => c.Parent).FirstOrDefaultAsync(c => c.Id == id) ?? throw new KeyNotFoundException("Can't find category");
             
             _context.Entry(category).State = EntityState.Modified;
             if (query.Name != null && query.Name.Trim() != "")
             {
                 category.Name = query.Name;
             }
-            if (query.Parent != null)
+            if (query.Parent != Guid.Empty)
             {
                 if (query.Parent == id)
                 {
                     throw new ArgumentException("Category can't be his own parent");
                 }
-                var parent = _context.Category.Include(c => c.Parent).FirstOrDefault(c => c.Id == query.Parent) ?? throw new KeyNotFoundException("Can't find parent");
-                if (IsChildOf(parent, category))
+                Category? parent = null;
+                if (query.Parent != null)
                 {
-                    throw new ArgumentException("Category can't be child of his own child");
+                    parent = await _context.Category.Include(c => c.Parent).FirstOrDefaultAsync(c => c.Id == query.Parent) ?? throw new KeyNotFoundException("Can't find parent");
+                    if (IsChildOf(parent, category))
+                    {
+                        throw new ArgumentException("Category can't be child of his own child");
+                    }
+                    parent.Children.Add(category);
                 }
-                parent.Children.Add(category);
+                category.Parent?.Children.Remove(category);
                 category.Parent = parent;
             }
             

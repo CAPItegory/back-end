@@ -5,7 +5,7 @@
 
         public string? Name { get; set; }
 
-        public Guid? Parent {  get; set; }
+        public Guid? Parent { get; set; } = Guid.Empty;
 
     }
 }
