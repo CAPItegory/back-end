@@ -1,12 +1,43 @@
 services:
-  capitegory_backend:
+  capitegory-backend:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
     ports:
-      - "8080"
-      - "8081"
+      - "8080:8080"
+      - "8081:8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  capitegory-sqlserver:
+    user: root
+    volumes:
+        - backup_capitegory:/var/opt/mssql/backups
+        - data_capitegory:/var/opt/mssql/data
+        - log_capitegory:/var/opt/mssql/log
+    healthcheck:
+      test: timeout 1 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/1433'
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+
+  migrations:
+    container_name: capitegory-service-migrations
+    build:
+      context: CAPItegory_backend
+      dockerfile: Dockerfile
+      target: migrations
+    environment:
+      - MSSQL_SA_PASSWORD=${DATABASE_PASSWORD}
+    depends_on:
+        capitegory-sqlserver:
+            condition: service_healthy
+
+
+volumes:
+  backup_capitegory:
+  data_capitegory:
+  log_capitegory:  
