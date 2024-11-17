@@ -124,7 +124,11 @@ namespace CAPItegory_backend.Services
                 {
                     throw new ArgumentException("Category can't be his own parent");
                 }
-                var parent = _context.Category.Find(query.Parent) ?? throw new KeyNotFoundException("Can't find parent");
+                var parent = _context.Category.Include(c => c.Parent).FirstOrDefault(c => c.Id == query.Parent) ?? throw new KeyNotFoundException("Can't find parent");
+                if (IsChildOf(parent, category))
+                {
+                    throw new ArgumentException("Category can't be child of his own child");
+                }
                 parent.Children.Add(category);
                 category.Parent = parent;
             }
@@ -161,6 +165,20 @@ namespace CAPItegory_backend.Services
                 await DeleteCategory(child);
             }
             _context.Category.Remove(category);
+        }
+
+        private bool IsChildOf(Category category, Category parent)
+        {
+            if (category.Parent == null)
+            {
+                return false;
+            }
+            if (category.Parent.Id == parent.Id)
+            {
+                return true;
+            }
+            var categoryParent = _context.Category.Include(c => c.Parent).FirstOrDefault(c => c.Id == category.Parent.Id) ?? category.Parent;
+            return IsChildOf(categoryParent, parent);
         }
     }
 }
